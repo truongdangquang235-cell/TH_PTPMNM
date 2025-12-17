@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  # --- 1. Web Server (Chứa code CTusCoffee) ---
+  web:
+    build: .
+    ports:
+      - "8080:80"  # Truy cập bằng localhost:8080
+    volumes:
+      - ./src:/var/www/html # Code PHP nằm ở đây
+    depends_on:
+      - db # Bắt buộc phải đợi db chạy xong mới chạy web
+
+  # --- 2. Database Server (MySQL) ---
+  db:
+    image: mysql:8.0
+    container_name: ctus_mysql_container
+    environment:
+      MYSQL_DATABASE: ctus_db      # <-- Tên DB (giống tên cũ của bạn)
+      MYSQL_ROOT_PASSWORD: 123     # <-- Đặt password root (ví dụ là 123)
+    volumes:
+      # Dòng này giúp tự động nạp file .sql bạn đã copy ở Bước 1
+      - ./mysql_data:/docker-entrypoint-initdb.d

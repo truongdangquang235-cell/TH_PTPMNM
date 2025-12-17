@@ -1,0 +1,94 @@
+﻿@{
+    // Giữ nguyên Layout = null để chỉ tải nội dung View
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Quản Lý Nhà Sản Xuất</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6; /* Màu viền Bootstrap */
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa; /* Màu nền tiêu đề */
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .action-links a {
+            margin-right: 5px; /* Giảm khoảng cách giữa các nút */
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🏭 Thông tin các Nhà Sản Xuất</h2>
+    <hr />
+
+    <p>
+        <a href="@Url.Action("Them")" class="btn btn-success">➕ Thêm mới</a>
+    </p>
+
+    @* Bảng được thiết kế theo chuẩn Bootstrap *@
+    <table>
+        <thead class="thead-light">
+            <tr>
+                <th style="width: 10%;">Mã NSX</th>
+                <th style="width: 30%;">Tên Nhà Sản Xuất</th>
+                <th style="width: 40%;">Địa chỉ</th>
+                <th style="width: 20%; text-align: center;">Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                // Lấy dữ liệu từ ViewBag.nsx (giả định là một IEnumerable/List)
+                var nhaSanXuats = ViewBag.nsx as IEnumerable<dynamic>;
+
+                if (nhaSanXuats != null && nhaSanXuats.Any())
+                {
+                    foreach (var item in nhaSanXuats)
+                    {
+                        <tr>
+                            <td style="text-align: center;">@item.Mansx</td>
+                            <td>@item.Tennsx</td>
+                            <td>@item.Diachi</td>
+                            <td class="action-links" style="text-align: center;">
+                                <a href="@Url.Action("Sua", new { id = item.Mansx })" class="btn btn-sm btn-primary">Sửa</a>
+                                <a href="@Url.Action("Xoa", new { id = item.Mansx })" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa nhà sản xuất @item.Tennsx không?');">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Không có dữ liệu nhà sản xuất nào.</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>

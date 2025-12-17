@@ -1,0 +1,107 @@
+﻿@{
+    // Giữ nguyên Layout = null để chỉ tải nội dung View
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Quản Lý Loại Hàng Hóa</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 60%; /* Tăng nhẹ độ rộng cho phù hợp */
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6; /* Màu viền Bootstrap */
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #e6f7ff;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .add-button {
+            padding: 10px 15px;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+            .add-button:hover {
+                background-color: #5a6268;
+            }
+
+        .action-links a {
+            margin-right: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>🏷️ Danh Sách Loại Hàng Hóa</h2>
+    <hr />
+
+    <p>
+        <a href="@Url.Action("Them")" class="add-button">➕ Thêm mới Loại Hàng</a>
+    </p>
+
+    @* Sử dụng thead/tbody và Bootstrap class *@
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th style="width: 20%;">Mã Loại</th>
+                <th style="width: 50%;">Tên Loại</th>
+                <th style="width: 30%; text-align: center;">Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                // Lấy danh sách từ ViewBag.LoaiHangHoas
+                var danhSachLoaiHangHoa = ViewBag.lh as IEnumerable<dynamic>;
+
+                if (danhSachLoaiHangHoa != null && danhSachLoaiHangHoa.Any())
+                {
+                    foreach (var item in danhSachLoaiHangHoa)
+                    {
+                        <tr>
+                            <td style="text-align: center;">@item.Maloai</td>
+                            <td>@item.Tenloai</td>
+                            <td class="action-links" style="text-align: center;">
+                                <a href="@Url.Action("Sua", new { id = item.Maloai })" class="btn btn-sm btn-primary">Sửa</a>
+                                <a href="@Url.Action("ChiTiet", new { id = item.Maloai })" class="btn btn-sm btn-info">Chi Tiết</a>
+                                <a href="@Url.Action("Xoa", new { id = item.Maloai })" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa loại hàng @item.Tenloai không? (Thao tác này có thể ảnh hưởng đến các hàng hóa liên quan)');">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" style="text-align: center;">Không có dữ liệu loại hàng hóa nào.</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>

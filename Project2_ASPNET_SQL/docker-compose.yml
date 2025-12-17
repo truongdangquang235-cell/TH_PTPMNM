@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  # 1. Web App (ASP.NET)
+  webapp:
+    build: .
+    ports:
+      - "5000:80"  # Truy cập bằng localhost:5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - sqlserver
+
+  # 2. Database (SQL Server)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server_container
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123@  # Mật khẩu bắt buộc có: Hoa, thường, số, ký tự đặc biệt
+    ports:
+      - "1433:1433"

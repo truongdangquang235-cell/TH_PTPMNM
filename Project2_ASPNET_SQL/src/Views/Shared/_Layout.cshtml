@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Quản Lý Hệ Thống</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* CSS bổ sung để cố định chiều cao của sidebar nếu cần */
+        .sidebar {
+            /* Giúp list-group-item có thể click được dễ dàng */
+            padding: 0;
+        }
+
+        .list-group-item {
+            border: none;
+            border-radius: 0;
+        }
+
+            .list-group-item a {
+                display: block;
+                padding: .75rem 1.25rem;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container-fluid">
+        <div class="card">
+
+            <div class="card-header bg-secondary text-white">
+                Header
+            </div>
+
+            <div class="card-title">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="nav nav-tabs">
+                            <div class="nav-item bg-primary"><div class="nav-link"><a asp-controller="Home" asp-action="Index" class="text-white">Trang chủ</a></div></div>
+                            <div class="nav-item bg-primary"><div class="nav-link"><a asp-controller="Home" asp-action="Index" class="text-white">Trang chủ</a></div></div>
+                            <div class="nav-item bg-primary"><div class="nav-link"><a asp-controller="Home" asp-action="Index" class="text-white">Trang chủ</a></div></div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="nav nav-tabs float-right">
+                            <div class="nav-item bg-primary"><div class="nav-link"><a asp-controller="Home" asp-action="Index" class="text-white">Trang chủ</a></div></div>
+                            <div class="nav-item bg-primary"><div class="nav-link"><a asp-controller="Home" asp-action="Index" class="text-white">Trang chủ</a></div></div>
+                            <div class="nav-item bg-primary"><div class="nav-link"><a asp-controller="Home" asp-action="Index" class="text-white">Trang chủ</a></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-3 sidebar">
+                        <div class="list-group" id="sidebar-menu">
+                            <div class="list-group-item bg-info ">
+                                <a asp-controller="nhasanxuat" asp-action="Index" class="text-white ajax-link">Quản lý Nhà sản xuất</a>
+                            </div>
+                            <div class="list-group-item bg-info ">
+                                <a asp-controller="nhanvien" asp-action="Index" class="text-white ajax-link">Quản lý Nhân viên</a>
+                            </div>
+                            <div class="list-group-item bg-info ">
+                                <a asp-controller="khachhang" asp-action="Index" class="text-white ajax-link">Quản lý Khách hàng</a>
+                            </div>
+                            <div class="list-group-item bg-info ">
+                                <a asp-controller="loaihanghoa" asp-action="Index" class="text-white ajax-link">Quản lý Loại hàng hóa</a>
+                            </div>
+                            <div class="list-group-item bg-info ">
+                                <a asp-controller="hanghoa" asp-action="Index" class="text-white ajax-link">Quản lý Hàng hóa</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-9 bg-light" id="main-content-area">
+                        @RenderBody()
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer bg-secondary text-white">
+                Footer
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Lắng nghe sự kiện click trên tất cả các liên kết có class 'ajax-link'
+            $('.ajax-link').on('click', function (e) {
+                // 1. Chặn sự kiện mặc định của liên kết (ngăn tải lại trang)
+                e.preventDefault();
+
+                var url = $(this).attr('href'); // Lấy URL từ thuộc tính href (đã được Tag Helper render)
+
+                // 2. Tải nội dung
+                if (url) {
+
+                    // Hiển thị trạng thái đang tải
+                    $('#main-content-area').html('<div class="p-5 text-center">Đang tải nội dung...</div>');
+
+                    // Tùy chọn: Đánh dấu liên kết đang được chọn
+                    $('#sidebar-menu a').removeClass('font-weight-bold');
+                    $(this).addClass('font-weight-bold');
+
+                    // Gửi yêu cầu AJAX GET
+                    $.get(url, function (data) {
+                        // 3. Chèn nội dung HTML trả về vào khu vực chính
+                        $('#main-content-area').html(data);
+                    }).fail(function () {
+                        // Xử lý lỗi
+                        $('#main-content-area').html('<div class="p-5 text-danger">Lỗi: Không thể tải trang. Vui lòng kiểm tra Controller Action.</div>');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

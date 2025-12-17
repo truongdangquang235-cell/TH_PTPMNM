@@ -1,0 +1,18 @@
+# Bỏ qua thư mục hệ thống
+.DS_Store
+Thumbs.db
+
+# Bỏ qua thư mục build của .NET (Project 2)
+**/bin/
+**/obj/
+
+# Bỏ qua thư mục thư viện (nếu có)
+**/node_modules/
+**/vendor/
+
+# Bỏ qua dữ liệu database (tùy chọn, nhưng nên bỏ file .mdf, .ldf)
+*.mdf
+*.ldf
+
+# QUAN TRỌNG: Bỏ qua file môi trường chứa pass
+.env
