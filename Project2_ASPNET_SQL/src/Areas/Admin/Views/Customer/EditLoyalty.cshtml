@@ -1,0 +1,55 @@
+﻿@model GoCoffeeTea.Models.Customer
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Cấp độ Khách hàng";
+}
+
+<h2 class="mb-4 text-success">⭐ Chỉnh sửa Cấp độ Khách hàng</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow-sm p-4">
+            <form asp-action="EditLoyalty">
+                <input type="hidden" asp-for="CustomerID" />
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tên Khách hàng:</label>
+                    <p class="form-control-plaintext"><strong>@Model.FullName</strong></p>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email:</label>
+                    <p class="form-control-plaintext">@Model.Email</p>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LoyaltyTier" class="form-label">Cấp độ Thân thiết (*)</label>
+                    <select asp-for="LoyaltyTier" class="form-select" required>
+                        <option value="Bronze">Bronze</option>
+                        <option value="Silver">Silver</option>
+                        <option value="Gold">Gold</option>
+                        <option value="Platinum">Platinum</option>
+                    </select>
+                    <span asp-validation-for="LoyaltyTier" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-save"></i> Cập nhật Cấp độ
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại Danh sách
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

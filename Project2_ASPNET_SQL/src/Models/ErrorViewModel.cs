@@ -1,4 +1,4 @@
-namespace WebApplication1.Models
+namespace GoCoffeeTea.Models
 {
     public class ErrorViewModel
     {

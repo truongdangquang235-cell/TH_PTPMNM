@@ -1,0 +1,54 @@
+﻿@model IEnumerable<GoCoffeeTea.Models.MaterialInventory>
+
+@{
+    ViewData["Title"] = "Quản lý Tồn kho Nguyên vật liệu";
+}
+
+<h2 class="mb-4 text-primary">📦 Quản lý Tồn kho Nguyên vật liệu</h2>
+<hr />
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5>Danh sách Nguyên vật liệu</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Nguyên vật liệu</th>
+                    <th>Đơn vị</th>
+                    <th>Số lượng Tồn</th>
+                    <th>Cập nhật gần nhất</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    // Lớp CSS cảnh báo nếu tồn kho thấp (ví dụ: dưới 100 đơn vị)
+                    <tr class="@(item.Quantity < 100 ? "table-warning" : "")">
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Material.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Material.Unit)
+                        </td>
+                        <td>
+                            <span class="@(item.Quantity < 100 ? "text-danger fw-bold" : "text-success")">
+                                @item.Quantity.ToString("N2")
+                            </span>
+                        </td>
+                        <td>
+                            @item.LastUpdated.ToString("dd/MM/yyyy HH:mm")
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.MaterialInventoryID" class="btn btn-sm btn-warning me-2" title="Chỉnh sửa tồn kho">
+                                <i class="fas fa-edit"></i> Nhập/Điều chỉnh
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

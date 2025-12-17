@@ -1,0 +1,80 @@
+﻿@model GoCoffeeTea.Models.User
+
+@{
+    ViewData["Title"] = $"Chỉnh sửa Nhân viên: {Model.Username}";
+}
+
+<h2 class="mb-4 text-primary">✏️ Chỉnh sửa Tài khoản Nhân viên: @Model.Username</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-area="Admin" asp-controller="User" asp-action="Edit" asp-route-id="@Model.UserID" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            @* Hidden field cho ID và Username (không cho sửa Username) *@
+            <input type="hidden" asp-for="UserID" />
+            <input type="hidden" asp-for="Username" />
+            <input type="hidden" asp-for="PasswordHash" /> @* Giữ lại PasswordHash cũ nếu không nhập mới *@
+            <input type="hidden" asp-for="CreatedDate" />
+
+            @* Trường Tên đăng nhập (chỉ hiển thị) *@
+            <div class="form-group mb-3">
+                <label class="control-label">Tên đăng nhập (Username)</label>
+                <input asp-for="Username" class="form-control" readonly />
+            </div>
+
+            @* Trường Mật khẩu MỚI (newPassword) *@
+            <div class="form-group mb-3">
+                <label class="control-label" for="newPassword">Mật khẩu MỚI (Để trống nếu không thay đổi)</label>
+                <input type="password" id="newPassword" name="newPassword" class="form-control" />
+                <span class="text-muted small">Chỉ cần nhập vào đây nếu bạn muốn thay đổi mật khẩu.</span>
+            </div>
+
+            @* Trường Tên đầy đủ *@
+            <div class="form-group mb-3">
+                <label asp-for="FullName" class="control-label">Tên đầy đủ</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            @* Trường Email *@
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            @* Trường Vai trò (Role) *@
+            <div class="form-group mb-3">
+                <label asp-for="Role" class="control-label">Vai trò</label>
+                <select asp-for="Role" class="form-control">
+                    <option value="Employee">Employee</option>
+                    <option value="Admin">Admin</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            @* Trường Trạng thái (IsActive) *@
+            <div class="form-group form-check mb-3">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
+
+            @* Nút Submit và Quay lại *@
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-sync-alt"></i> Cập nhật</button>
+                <a asp-area="Admin" asp-controller="User" asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,84 @@
+﻿@model GoCoffeeTea.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết Đơn hàng #" + Model.OrderID;
+}
+
+<h2 class="mb-4 text-primary">Chi tiết Đơn hàng #@Model.OrderID</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow-sm p-4 mb-4">
+            <h5>Thông tin Giao dịch</h5>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-4">Ngày bán:</dt>
+                <dd class="col-sm-8">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+
+                <dt class="col-sm-4">Nhân viên:</dt>
+                <dd class="col-sm-8">@Model.Employee.FullName</dd>
+
+                <dt class="col-sm-4">Khách hàng:</dt>
+                <dd class="col-sm-8">@(Model.Customer?.FullName ?? "Khách vãng lai")</dd>
+
+                <dt class="col-sm-4">Trạng thái:</dt>
+                <dd class="col-sm-8">
+                    <span class="badge @(Model.Status == "Completed" ? "bg-success" : "bg-danger")">@Model.Status</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4 mb-4 bg-light">
+            <h5>Chi tiết Thanh toán</h5>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-6">Tổng tiền hàng:</dt>
+                <dd class="col-sm-6 text-end">@Model.TotalAmount.ToString("N0") VNĐ</dd>
+
+                <dt class="col-sm-6 text-warning">Giảm giá (@(Model.Discount?.Code ?? "N/A")):</dt>
+                <dd class="col-sm-6 text-end text-danger">- @Model.DiscountAmount.ToString("N0") VNĐ</dd>
+
+                <dt class="col-sm-6 border-top pt-2"><strong>Tổng phải thu:</strong></dt>
+                <dd class="col-sm-6 text-end border-top pt-2"><strong class="fs-5 text-primary">@Model.FinalAmount.ToString("N0") VNĐ</strong></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+        <h5>Sản phẩm đã mua</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detail in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>@(detail.Product?.Name ?? "Sản phẩm đã xóa")</td>
+                        <td>@detail.Quantity</td>
+                        <td>@detail.UnitPrice.ToString("N0")</td>
+                        <td>@detail.SubTotal.ToString("N0")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại Danh sách
+    </a>
+</div>

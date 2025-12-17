@@ -1,0 +1,68 @@
+﻿@model GoCoffeeTea.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard Tổng quan";
+}
+
+<h2 class="mb-4 text-primary">📊 Dashboard Tổng quan (30 Ngày)</h2>
+<hr />
+
+<div class="row">
+
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-success shadow">
+            <div class="card-body">
+                <h5 class="card-title">Tổng Doanh thu</h5>
+                <p class="card-text fs-3">@Model.TotalSalesLast30Days.ToString("N0") VNĐ</p>
+                <small>30 ngày gần nhất</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card text-white bg-warning shadow">
+            <div class="card-body">
+                <h5 class="card-title">Tổng Đơn hàng</h5>
+                <p class="card-text fs-3">@Model.TotalOrdersLast30Days</p>
+                <small>30 ngày gần nhất</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card bg-light shadow">
+            <div class="card-body text-center d-flex align-items-center justify-content-center">
+                <a asp-area="Admin" asp-controller="Report" asp-action="DailySales" class="btn btn-primary btn-lg w-100">
+                    Xem Báo cáo Chi tiết Ngày
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                Sản phẩm Bán chạy nhất (Số lượng)
+            </div>
+            <ul class="list-group list-group-flush">
+                @if (Model.TopSellingProducts.Any())
+                {
+                    @foreach (var item in Model.TopSellingProducts)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @item.ProductName
+                            <span class="badge bg-primary rounded-pill">@item.TotalQuantity</span>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item">Chưa có dữ liệu đơn hàng trong 30 ngày qua.</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+</div>

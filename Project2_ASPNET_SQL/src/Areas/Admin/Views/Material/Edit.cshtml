@@ -1,0 +1,55 @@
+﻿@model GoCoffeeTea.Models.Material
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Nguyên vật liệu";
+}
+
+<h2 class="mb-4 text-info">✏️ Chỉnh sửa Nguyên vật liệu: @Model.Name</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <input type="hidden" asp-for="MaterialID" />
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Tên Nguyên vật liệu (*)</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Unit" class="form-label">Đơn vị tính (*)</label>
+                    <input asp-for="Unit" class="form-control" />
+                    <span asp-validation-for="Unit" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" asp-for="IsActive" />
+                    <label class="form-check-label" asp-for="IsActive">
+                        @Html.DisplayNameFor(model => model.IsActive) (Tắt để ẩn khỏi danh sách)
+                    </label>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-info me-2 text-white">
+                        <i class="fas fa-save"></i> Lưu Thay đổi
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại Danh sách
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        // Kích hoạt client-side validation
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

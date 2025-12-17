@@ -1,0 +1,143 @@
+﻿@model IEnumerable<GoCoffeeTea.Models.Product>
+@{
+    ViewData["Title"] = "Giao diện Bán hàng (POS)";
+    // Lấy dữ liệu từ ViewBag/Session
+    var cart = (GoCoffeeTea.Models.ViewModels.CartViewModel)ViewBag.Cart;
+    var categories = (List<GoCoffeeTea.Models.Category>)ViewBag.Categories;
+}
+
+<h2 class="mb-4">Hệ thống Bán hàng GoCoffeeTea</h2>
+
+<div class="row">
+
+    <div class="col-md-8">
+        <h3>Menu Sản phẩm</h3>
+        <hr />
+
+        <ul class="nav nav-tabs mb-3" id="categoryTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all" role="tab" aria-controls="all" aria-selected="true">Tất cả</a>
+            </li>
+            @foreach (var cat in categories)
+            {
+                <li class="nav-item">
+                    @* HREF phải sử dụng tiền tố '#cat_' để đảm bảo ID là duy nhất *@
+                    <a class="nav-link"
+                       id="@(cat.Name.Replace(" ", "-"))-tab"
+                       data-bs-toggle="tab"
+                       href="#cat_@cat.CategoryID"
+                       role="tab"
+                       aria-controls="@(cat.Name.Replace(" ", "-"))"
+                       aria-selected="false">
+                        @cat.Name
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <div class="tab-content">
+
+            @* Tab "Tất cả" (Hiển thị tất cả sản phẩm) *@
+            <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm product-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.Name</h5>
+                                    <p class="card-text text-success">@item.Price.ToString("N0") VNĐ</p>
+
+                                    <form asp-controller="Sale" asp-action="AddToCart" method="post" class="d-inline">
+                                        <input type="hidden" name="productId" value="@item.ProductID" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Thêm vào Giỏ
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Vòng lặp tạo Nội dung cho TỪNG DANH MỤC *@
+            @foreach (var cat in categories)
+            {
+                <div class="tab-pane fade" id="cat_@cat.CategoryID" role="tabpanel" aria-labelledby="@(cat.Name.Replace(" ", "-"))-tab">
+                    <div class="row">
+
+                        @foreach (var item in Model.Where(p => p.CategoryID == cat.CategoryID))
+                        {
+                            <div class="col-md-4 mb-3">
+                                <div class="card shadow-sm product-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Name</h5>
+                                        <p class="card-text text-success">@item.Price.ToString("N0") VNĐ</p>
+                                        <form asp-controller="Sale" asp-action="AddToCart" method="post" class="d-inline">
+                                            <input type="hidden" name="productId" value="@item.ProductID" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="btn btn-sm btn-primary">Thêm vào Giỏ</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <h3>Giỏ hàng (@cart.Items.Count)</h3>
+        <hr />
+
+        @* Hiển thị thông báo (nếu có) *@
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        @if (cart.Items.Any())
+        {
+            <ul class="list-group mb-3">
+                @foreach (var item in cart.Items)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>@item.ProductName</strong><br />
+                            <small>@item.UnitPrice.ToString("N0") VNĐ</small>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <form asp-controller="Sale" asp-action="UpdateCart" method="post" class="d-inline">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="number" name="newQuantity" value="@item.Quantity" min="1" class="form-control form-control-sm me-2" style="width: 60px;" onchange="this.form.submit()" />
+                            </form>
+                            <form asp-controller="Sale" asp-action="RemoveFromCart" method="post" class="d-inline">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger ms-2" title="Xóa">X</button>
+                            </form>
+                        </div>
+                    </li>
+                }
+            </ul>
+
+            <div class="card bg-light p-3">
+                <h5>Tổng tiền: <span class="float-end text-danger">@cart.GrandTotal.ToString("N0") VNĐ</span></h5>
+            </div>
+
+            <a asp-controller="Sale" asp-action="Checkout" class="btn btn-lg btn-success mt-3 w-100">THANH TOÁN</a>
+        }
+        else
+        {
+            <div class="alert alert-info">Giỏ hàng hiện đang trống.</div>
+        }
+    </div>
+</div>

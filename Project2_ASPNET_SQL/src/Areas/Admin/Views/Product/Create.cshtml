@@ -1,0 +1,127 @@
+﻿@model GoCoffeeTea.Models.Product
+
+@{
+    ViewData["Title"] = "Thêm Sản phẩm Mới";
+    // Đảm bảo biến 'materials' được khai báo ở đây, trong khối @{}
+    var materials = (List<GoCoffeeTea.Models.Material>)ViewBag.Materials;
+}
+
+<h2 class="mb-4 text-primary">➕ Thêm Sản phẩm & Công thức</h2>
+<hr />
+
+<form asp-action="Create" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4 mb-4">
+                <h5>Thông tin Sản phẩm</h5>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Tên Sản phẩm (*)</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="CategoryID" class="form-label">Danh mục (*)</label>
+                    <select asp-for="CategoryID" class="form-select" asp-items="ViewBag.CategoryID">
+                        <option value="">-- Chọn Danh mục --</option>
+                    </select>
+                    <span asp-validation-for="CategoryID" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label">Giá bán (*)</label>
+                    <input asp-for="Price" class="form-control" type="number" step="1000" min="0" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h5>Công thức & Nguyên vật liệu</h5>
+                <p class="text-muted">Định nghĩa nguyên vật liệu cần thiết để tạo ra 1 đơn vị sản phẩm.</p>
+
+                <div id="recipe-items">
+                    </div>
+
+                <button type="button" class="btn btn-sm btn-outline-secondary mt-3" onclick="addRecipeRow()">
+                    <i class="fas fa-plus"></i> Thêm Nguyên vật liệu
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4 text-center">
+        <button type="submit" class="btn btn-lg btn-primary me-3">
+            <i class="fas fa-save"></i> Lưu Sản phẩm
+        </button>
+        <a asp-action="Index" class="btn btn-lg btn-secondary">Quay lại</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        // 1. CHUYỂN DANH SÁCH NGUYÊN VẬT LIỆU TỪ C# SANG JS
+        var materialList = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(materials.Select(m => new { 
+                             MaterialID = m.MaterialID, 
+                             Name = $"{m.Name} ({m.Unit})" 
+                          })));
+
+        // 2. Hàm xây dựng thẻ <select> cho dòng mới
+        function buildMaterialSelect(currentId = null) {
+            var selectHtml = '<select name="MaterialID" class="form-select" required>' +
+                             '<option value="">-- Chọn Nguyên vật liệu --</option>';
+            
+            materialList.forEach(function(mat) {
+                var selected = currentId == mat.MaterialID ? 'selected' : '';
+                selectHtml += `<option value="${mat.MaterialID}" ${selected}>${mat.Name}</option>`;
+            });
+            
+            selectHtml += '</select>';
+            return selectHtml;
+        }
+
+        // 3. Hàm tạo dòng Recipe mới
+        function addRecipeRow(recipeId = 0, materialId = 0, quantity = '') {
+            var selectControl = buildMaterialSelect(materialId);
+            
+            var quantityValue = quantity ? parseFloat(quantity).toFixed(4) : '';
+
+            var hiddenIdInput = recipeId > 0 ? `<input type="hidden" name="RecipeID" value="${recipeId}" />` : '';
+
+            var template = `
+                <div class="input-group mb-2 recipe-row">
+                    ${hiddenIdInput}
+                    ${selectControl.replace('name="MaterialID"', 'name="Recipes[i].MaterialID"')}
+                    <input type="number" name="QuantityNeeded" class="form-control" placeholder="Số lượng cần (VD: 50)" step="any" min="0.0001" required value="${quantityValue}" name="Recipes[i].QuantityNeeded">
+                    <button type="button" class="btn btn-danger" onclick="removeRecipeRow(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('recipe-items').insertAdjacentHTML('beforeend', template);
+        }
+
+        // 4. Hàm xóa dòng Nguyên liệu
+        function removeRecipeRow(button) {
+            button.closest('.input-group').remove();
+        }
+        
+        // 5. KHỞI TẠO: Thêm một dòng trống khi form load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('recipe-items').children.length === 0) {
+                 addRecipeRow();
+            }
+        });
+    </script>
+}

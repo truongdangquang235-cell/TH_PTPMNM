@@ -1,0 +1,97 @@
+﻿@model IEnumerable<GoCoffeeTea.Models.Product>
+
+@{
+    ViewData["Title"] = "Quản lý Sản phẩm";
+}
+
+<h2 class="mb-4 text-primary">☕ Quản lý Sản phẩm (Menu)</h2>
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fas fa-plus-circle"></i> Thêm Sản phẩm Mới
+    </a>
+</p>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        Danh mục
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th>
+                        Trạng thái
+                    </th>
+                    <th>
+                        Thao tác
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="@(!item.IsActive ? "table-secondary text-muted" : "")">
+                        <td>@item.ProductID</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            @(item.Category?.Name ?? "N/A")
+                        </td>
+                        <td>@item.Price.ToString("N0") VNĐ</td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge bg-success">Hiển thị</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Đã ẩn</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-info text-white me-2" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+
+                            @if (item.IsActive)
+                            {
+                                <form asp-action="Delete" asp-route-id="@item.ProductID" method="post" class="d-inline"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn ẩn sản phẩm này khỏi menu không?');">
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Ẩn/Xóa mềm">
+                                        <i class="fas fa-trash-alt"></i> Ẩn
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="Reactivate" asp-route-id="@item.ProductID" method="post" class="d-inline"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn MỞ LẠI sản phẩm này?');">
+                                    <button type="submit" class="btn btn-sm btn-success" title="Mở lại">
+                                        <i class="fas fa-undo"></i> Mở lại
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

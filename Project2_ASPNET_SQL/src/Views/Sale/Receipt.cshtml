@@ -1,0 +1,50 @@
+﻿@model GoCoffeeTea.Models.Order
+
+@{
+    ViewData["Title"] = "Hóa đơn #" + Model.OrderID;
+    Layout = "~/Views/Shared/_Layout_Sale.cshtml";
+}
+
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg p-4 mt-5">
+            <h2 class="text-center text-primary mb-4">✅ GIAO DỊCH THÀNH CÔNG</h2>
+            <hr />
+
+            <p><strong>Mã đơn hàng:</strong> #@Model.OrderID</p>
+            <p><strong>Thời gian:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</p>
+            <p><strong>Khách hàng:</strong> @(Model.Customer?.FullName ?? "Khách vãng lai")</p>
+
+            <h5 class="mt-4">Chi tiết Sản phẩm:</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th>Sản phẩm</th><th>SL</th><th>Thành tiền</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@(detail.Product?.Name ?? "Sản phẩm đã xóa")</td>
+                            <td>@detail.Quantity</td>
+                            <td>@detail.SubTotal.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <hr />
+
+            <div class="fw-bold">
+                <p>Tổng tiền hàng: <span class="float-end">@Model.TotalAmount.ToString("N0") VNĐ</span></p>
+                <p class="text-danger">Giảm giá (@(Model.Discount?.Code ?? "N/A")):<span class="float-end">- @Model.DiscountAmount.ToString("N0") VNĐ</span></p>
+                <h4 class="text-success border-top pt-2">TỔNG CỘNG: <span class="float-end">@Model.FinalAmount.ToString("N0") VNĐ</span></h4>
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-action="Index" class="btn btn-primary">Thanh Toán</a>
+                
+            </div>
+        </div>
+    </div>
+</div>

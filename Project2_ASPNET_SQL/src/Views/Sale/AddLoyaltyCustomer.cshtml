@@ -1,0 +1,37 @@
+﻿@model GoCoffeeTea.Models.Customer
+@{
+    ViewData["Title"] = "Thêm Khách hàng Thân thiết";
+}
+
+<h2 class="mb-4">Thêm Khách hàng Thân thiết</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AddLoyaltyCustomer" method="post">
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label">Họ và Tên</label>
+                <input asp-for="FullName" class="form-control" required />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+                <input asp-for="PhoneNumber" class="form-control" required />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email (Tùy chọn)</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu Khách hàng</button>
+            <a asp-action="Checkout" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

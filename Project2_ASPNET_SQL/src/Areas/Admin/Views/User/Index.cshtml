@@ -1,0 +1,89 @@
+﻿@model IEnumerable<GoCoffeeTea.Models.User>
+
+@{
+    ViewData["Title"] = "Quản lý Nhân viên";
+}
+
+<h2 class="mb-4 text-primary">👥 Quản lý Tài khoản Nhân viên</h2>
+<hr />
+
+<p>
+    <a asp-area="Admin" asp-controller="User" asp-action="Create" class="btn btn-success">
+        <i class="fas fa-user-plus"></i> Thêm Nhân viên Mới
+    </a>
+</p>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Tên đầy đủ</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="@(!item.IsActive ? "table-secondary text-muted" : "")">
+                        <td>@item.UserID</td>
+                        <td><strong>@item.Username</strong></td>
+                        <td>@item.FullName</td>
+                        <td>@item.Email</td>
+                        <td>
+                            <span class="badge @(item.Role == "Admin" ? "bg-warning text-dark" : "bg-info")">@item.Role</span>
+                        </td>
+                        <td>
+                            @if (item.IsActive)
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Khóa</span>
+                            }
+                        </td>
+                        <td>@item.CreatedDate.ToString("dd/MM/yy")</td>
+                        <td>
+
+                            @* Nút Sửa (luôn hiển thị) *@
+                            <a asp-area="Admin" asp-controller="User" asp-action="Edit" asp-route-id="@item.UserID"
+                               class="btn btn-sm btn-info text-white me-2" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i> Sửa
+                            </a>
+
+                            @if (item.IsActive)
+                            {
+                                <form asp-area="Admin" asp-controller="User" asp-action="Lock" asp-route-id="@item.UserID" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản @item.Username không?');"
+                                            title="Khóa Tài khoản">
+                                        <i class="fas fa-lock"></i> Khóa
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-area="Admin" asp-controller="User" asp-action="Unlock" asp-route-id="@item.UserID" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success"
+                                            onclick="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản @item.Username không?');"
+                                            title="Mở Khóa">
+                                        <i class="fas fa-unlock"></i> Mở Khóa
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

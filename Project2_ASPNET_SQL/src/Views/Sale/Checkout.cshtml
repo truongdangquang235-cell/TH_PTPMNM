@@ -1,0 +1,103 @@
+﻿@model GoCoffeeTea.Models.ViewModels.CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán Đơn hàng";
+    var cart = Model.Cart; // Lấy giỏ hàng từ ViewModel
+}
+
+<h2 class="mb-4">Thanh toán Đơn hàng</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<form asp-action="ProcessOrder" method="post">
+    <div class="row">
+
+        <div class="col-md-6">
+            <h3>Chi tiết Đơn hàng</h3>
+            <hr />
+
+            @if (cart.Items.Any())
+            {
+                <ul class="list-group mb-3">
+                    @foreach (var item in cart.Items)
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div>@item.ProductName (@item.Quantity x @item.UnitPrice.ToString("N0"))</div>
+                            <strong>@item.SubTotal.ToString("N0") VNĐ</strong>
+                        </li>
+                    }
+                </ul>
+
+                <div class="card p-3 bg-warning bg-opacity-10 border-warning">
+                    <h4>Tổng tiền (Chưa giảm): <span class="float-end">@cart.GrandTotal.ToString("N0") VNĐ</span></h4>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">Giỏ hàng trống. Vui lòng quay lại POS.</div>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <h3>Thông tin Khách hàng & Khuyến mãi</h3>
+            <hr />
+
+            <div class="mb-3">
+                <label asp-for="CustomerId" class="form-label">Khách hàng thân thiết (Tích điểm)</label>
+                <select asp-for="CustomerId" class="form-select">
+                    <option value="">-- Khách vãng lai --</option>
+
+                    @* Truy cập ViewBag.LoyaltyCustomers trực tiếp *@@* Fix lỗi RuntimeBinderException *@
+                    @if (ViewBag.LoyaltyCustomers != null)
+                    {
+                        @foreach (var cust in ViewBag.LoyaltyCustomers)
+                        {
+                            <option value="@cust.CustomerID">@cust.FullName (@cust.PhoneNumber)</option>
+                        }
+                    }
+                </select>
+                <a asp-action="AddLoyaltyCustomer" class="btn btn-sm btn-outline-info mt-2">Thêm Khách hàng mới</a>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DiscountCode" class="form-label">Mã khuyến mãi</label>
+                <input asp-for="DiscountCode" class="form-control" placeholder="Nhập 0 nếu không sử dụng mã khuyến mãi" />
+                <small class="form-text text-muted">
+                    Mã khuyến mãi áp dụng:
+                    @if (ViewBag.ActiveDiscounts != null)
+                    {
+                        @foreach (var d in ViewBag.ActiveDiscounts)
+                        {
+                            <span>[@d.Code]</span>
+                        }
+                    }
+                </small>
+            </div>
+
+            <hr />
+
+            <button type="submit" class="btn btn-lg btn-success mt-3 w-100" @(cart.Items.Any() ? "" : "disabled")>
+                XÁC NHẬN THANH TOÁN (Tổng: @cart.GrandTotal.ToString("N0") VNĐ)
+            </button>
+            <a asp-action="Index" class="btn btn-sm btn-secondary w-100 mt-2">Quay lại POS</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

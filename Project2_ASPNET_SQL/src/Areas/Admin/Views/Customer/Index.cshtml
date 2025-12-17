@@ -1,0 +1,65 @@
+﻿@model IEnumerable<GoCoffeeTea.Models.Customer>
+
+@{
+    ViewData["Title"] = "Quản lý Khách hàng";
+}
+
+<h2 class="mb-4 text-primary">👥 Quản lý Khách hàng Thân thiết</h2>
+<hr />
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên khách hàng</th>
+                    <th>Điện thoại</th>
+                    <th>Email</th>
+                    <th>Cấp độ</th>
+                    <th>Chi tiêu tích lũy</th>
+                    <th>Tổng đơn</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="@(!item.IsLoyalty ? "table-light text-muted" : "")">
+                        <td>@item.CustomerID</td>
+                        <td><strong>@item.FullName</strong></td>
+                        <td>@(item.PhoneNumber ?? "N/A")</td>
+                        <td>@(item.Email ?? "N/A")</td>
+                        <td>
+                            @* Hiển thị cấp độ thân thiết *@
+                            <span class="badge
+                                    @(item.LoyaltyTier == "Gold" ? "bg-warning text-dark" :
+                                                                    item.LoyaltyTier == "Silver" ? "bg-secondary" :
+                                                                    item.IsLoyalty ? "bg-info" : "bg-light text-dark")">
+                            @item.LoyaltyTier
+                        </span>
+                    </td>
+                    <td>@item.TotalSpent.ToString("N0") VNĐ</td>
+                    <td>@item.TotalOrders</td>
+                    <td>
+                        @* Nút xem chi tiết (Details) *@
+                        <a asp-area="Admin" asp-controller="Customer" asp-action="Details" asp-route-id="@item.CustomerID"
+                           class="btn btn-sm btn-primary me-2" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i> Chi tiết
+                        </a>
+
+                            @* Nút chỉnh sửa cấp độ (EditLoyalty) *@
+                        @if (item.IsLoyalty)
+                            {
+                                <a asp-area="Admin" asp-controller="Customer" asp-action="EditLoyalty" asp-route-id="@item.CustomerID"
+                                   class="btn btn-sm btn-info text-white" title="Chỉnh sửa cấp độ">
+                                    <i class="fas fa-medal"></i> Cấp độ
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

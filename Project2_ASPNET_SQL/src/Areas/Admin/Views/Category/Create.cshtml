@@ -1,0 +1,46 @@
+﻿@model GoCoffeeTea.Models.Category
+
+@{
+    ViewData["Title"] = "Thêm Danh mục Mới";
+}
+
+<h2 class="mb-4 text-primary">➕ Thêm Danh mục Sản phẩm</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Tên Danh mục (*)</label>
+                    <input asp-for="Name" class="form-control" placeholder="Ví dụ: Cà phê truyền thống" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Mô tả (Tùy chọn)</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả ngắn về danh mục này"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-save"></i> Tạo Danh mục
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại Danh sách
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        // BẮT BUỘC để kích hoạt client-side validation (kiểm tra form ngay trên trình duyệt)
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

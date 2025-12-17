@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using WebApplication1.Models;
+using GoCoffeeTea.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace WebApplication1.Controllers
+namespace GoCoffeeTea.Controllers
 {
     public class HomeController : Controller
     {
