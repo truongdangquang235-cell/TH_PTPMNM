@@ -21,5 +21,5 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./Project_PHP/      # Thư mục code trên máy tính cần đẩy đi
+        local-dir: ./Project1_PHP_MySQL/      # Thư mục code trên máy tính cần đẩy đi
         server-dir: ./htdocs/          # BẮT BUỘC: InfinityFree yêu cầu code phải nằm trong htdocs
