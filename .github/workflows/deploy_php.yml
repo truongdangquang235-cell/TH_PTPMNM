@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'Project_PHP/**' # Chỉ chạy khi sửa code trong thư mục này
+      - 'Project1_PHP_MySQL/**' # Chỉ chạy khi sửa code trong thư mục này
 
 jobs:
   FTP-Deploy-Action:
