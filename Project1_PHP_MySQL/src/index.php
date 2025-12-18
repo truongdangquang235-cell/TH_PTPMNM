@@ -19,7 +19,7 @@ if ($products_result && $products_result->num_rows > 0) {
 ?>
 
 <div class="main-header">
-    <h1>Hương Vị Của Đam Mê</h1>
+    <h1>Hương Vị Của Đam Mê Ttt</h1>
     <p>Khởi đầu ngày mới với một tách cà phê hoàn hảo từ CTusCoffee</p>
     <a href="#menu-section" class="btn-shop">XEM MENU NGAY <i class="fas fa-arrow-down"></i></a>
 </div>
