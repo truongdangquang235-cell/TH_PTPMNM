@@ -1,0 +1,25 @@
+name: Deploy PHP to InfinityFree
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Project_PHP/**' # Chỉ chạy khi sửa code trong thư mục này
+
+jobs:
+  FTP-Deploy-Action:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Lấy code mới nhất
+      uses: actions/checkout@v4
+    
+    - name: 📂 Đẩy code lên Hosting qua FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./Project_PHP/      # Thư mục code trên máy tính cần đẩy đi
+        server-dir: ./htdocs/          # BẮT BUỘC: InfinityFree yêu cầu code phải nằm trong htdocs

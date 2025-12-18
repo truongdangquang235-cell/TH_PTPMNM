@@ -1,10 +1,10 @@
 <?php
 date_default_timezone_set('Asia/Ho_Chi_Minh');
 
-$servername = "db";
-$username = "root"; // Thay đổi nếu bạn có username khác
-$password = "123";     // Thay đổi nếu bạn có password khác
-$dbname = "ctus_db";
+$servername = "truongdangquang.infinityfree.me";
+$username = "if0_3456789"; // Thay đổi nếu bạn có username khác
+$password = "0399708261";     // Thay đổi nếu bạn có password khác
+$dbname = "if0_3456789_db_coffee";
 
 // Tạo kết nối bằng MySQLi
 $conn = new mysqli($servername, $username, $password, $dbname);
